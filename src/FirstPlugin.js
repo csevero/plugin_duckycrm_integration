@@ -1,9 +1,9 @@
-import { FlexPlugin } from "flex-plugin";
-import React from "react";
-import FeatherTheme from "./FeatherCorpTheme";
-import QuoteComponent from "./components/Quote/Quote";
+import { FlexPlugin } from 'flex-plugin';
+import React from 'react';
+import QuoteComponent from './components/Quote/Quote';
+import FeatherTheme from './FeatherCorpTheme';
 
-const PLUGIN_NAME = "FirstPlugin";
+const PLUGIN_NAME = 'FirstPlugin';
 
 export default class FirstPlugin extends FlexPlugin {
   constructor() {
@@ -20,27 +20,19 @@ export default class FirstPlugin extends FlexPlugin {
   init(flex, manager) {
     //added div if worker is unavailable
     flex.NoTasksCanvas.Content.add(
-      <div style={{ color: "red", padding: 20 }} key='warning'>
+      <div style={{ color: 'red', padding: 20 }} key="warning">
         You are not available to receive tasks!
       </div>,
       {
-        if: (props) => props.worker.activity.available === false,
-      }
+        if: props => props.worker.activity.available === false,
+      },
     );
 
-    /* 
-      alterando strings padrão do Twilio, para listar as strings atuais, acesse o localhost:3000, abra o console e digite Twilio.Flex.Manager.getInstance().strings
-    */
-    manager.strings.TaskHeaderLine = "Task 1st line";
-    manager.strings.TaskLineCallReserved = "Call 2nd line";
-    manager.strings.TaskLineSmsReserved = "SMS 2nd line";
-    manager.strings.TaskLineChatReserved = "Chat 2nd line";
-
-    //add the crm on the CRMContainer
-    const crmUrl = "https://duckycrm-7409-dev.twil.io";
-    flex.CRMContainer.defaultProps.uriCallback = (task) => {
+    //set the crm integration, and when select a task we updated the crm container with the information of customer
+    const crmUrl = 'https://duckycrm-7409-dev.twil.io';
+    flex.CRMContainer.defaultProps.uriCallback = task => {
       if (task) {
-        return `${crmUrl}/profile?id=` + task.attributes.account_number;
+        return `${crmUrl}/profile?id=${Number(task.attributes.account_number)}`;
       } else {
         return `${crmUrl}/index`;
       }
@@ -48,18 +40,18 @@ export default class FirstPlugin extends FlexPlugin {
 
     //set logo
     flex.MainHeader.defaultProps.logoUrl =
-      "https://tangerine-toad-5117.twil.io/assets/feathercorp-logo-white.svg";
+      'https://tangerine-toad-5117.twil.io/assets/feathercorp-logo-white.svg';
 
     //set color theme
     manager.updateConfig({ colorTheme: FeatherTheme });
 
     //remove default components
-    flex.NoTasksCanvas.Content.remove("first-line");
-    flex.NoTasksCanvas.Content.remove("second-line");
-    flex.NoTasksCanvas.Content.remove("hint");
+    flex.NoTasksCanvas.Content.remove('first-line');
+    flex.NoTasksCanvas.Content.remove('second-line');
+    flex.NoTasksCanvas.Content.remove('hint');
 
     //add our quote component
-    flex.NoTasksCanvas.Content.add(<QuoteComponent key='qotd' />, {
+    flex.NoTasksCanvas.Content.add(<QuoteComponent key="qotd" />, {
       sortOrder: -1,
     });
   }
